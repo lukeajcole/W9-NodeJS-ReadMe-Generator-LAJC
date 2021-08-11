@@ -1,6 +1,8 @@
+//Import tools
 const inquirer = require("inquirer");
 const fs = require('fs');
 
+//initialize content
 const sections = ['Table of Contents','Description',  'Installation', 'Usage', 'License', 'Contributing', 'Tests', 'Questions']
 const filename = 'README.md'
 const licenseObjs = [
@@ -25,8 +27,9 @@ const licenseObjs = [
   badge: `[![License: ISC](https://img.shields.io/badge/License-ISC-blue.svg)](https://opensource.org/licenses/ISC)`
   }
 ]
+//Get a simpler array from the licenses for use in the prompt
 const licenses = licenseObjs.map(({name}) => name);
-console.log(licenses);
+
 const questions = [
     { type: 'input',
       message: 'What is your Project Title?',
@@ -73,6 +76,7 @@ const questions = [
     }
      ];
 
+//Main function to build the response once inquirer has it
 function buildReadme(response) {
   // WHEN I click on the links in the Table of Contents
     // THEN I am taken to the corresponding section of the README
@@ -126,15 +130,16 @@ function buildReadme(response) {
     writeToFile(filename, msgArray.join('\n'));
 }
 
+//Get the license that is selected by comparing the section to the name field
 function makeLicense (selection){
-   // WHEN I choose a license for my application from a list of options
-    // THEN a badge for that license is added near the top of the README and a notice is added to the section of the README entitled License that explains which license the application is covered under
-  for (let i = 0; i < licenseObjs.length; i++){
+    for (let i = 0; i < licenseObjs.length; i++){
     if (selection === licenseObjs[i].name) return licenseObjs[i];
   }
   return "No License";
 }
 
+
+//Loop through the sectiosn and give them a header with a link
 function makeTOC() {
   let arrTOC = [];
   for (let i=1 ;i < sections.length; i++){
@@ -143,12 +148,12 @@ function makeTOC() {
   return arrTOC.join('\n');
 }
 
-
+//Simple write to file function
 function writeToFile(filename, data) {
     fs.writeFile(filename, data, (err) => err ? console.log(err): console.log("Success!") );
 }
 
-
+//Main Code
 inquirer
 .prompt(questions)
 .then((response) => buildReadme(response))
